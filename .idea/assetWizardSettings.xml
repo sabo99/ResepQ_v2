@@ -308,7 +308,7 @@
                                 <PersistentState>
                                   <option name="values">
                                     <map>
-                                      <entry key="url" value="file:/$PROJECT_DIR$/../../Users/Sabo-Hao/AppData/Local/Android/Sdk/icons/material/materialiconsround/delete/round_delete_24.xml" />
+                                      <entry key="url" value="file:/$PROJECT_DIR$/../../Users/Sabo-Hao/AppData/Local/Android/Sdk/icons/material/materialiconsround/delete_forever/round_delete_forever_24.xml" />
                                     </map>
                                   </option>
                                 </PersistentState>
@@ -319,7 +319,7 @@
                         <option name="values">
                           <map>
                             <entry key="color" value="ffffff" />
-                            <entry key="outputName" value="ic_round_delete" />
+                            <entry key="outputName" value="ic_round_delete_forever" />
                             <entry key="sourceFile" value="D:\Project-Android\ResepQ_v2" />
                           </map>
                         </option>

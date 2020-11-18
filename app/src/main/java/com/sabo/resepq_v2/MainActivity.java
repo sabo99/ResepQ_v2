@@ -109,13 +109,63 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.search, menu);
+        getMenuInflater().inflate(R.menu.main, menu);
 
         MenuItem item = menu.findItem(R.id.action_search);
         simpleSearchView.setMenuItem(item);
         return super.onCreateOptionsMenu(menu);
     }
 
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == R.id.action_clear)
+          clearAllRecipe();
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void clearAllRecipe() {
+        new SweetAlertDialog(this, SweetAlertDialog.WARNING_TYPE)
+                .setTitleText("Clear All Recipe")
+                .setContentText("Are you sure?")
+                .showCancelButton(true)
+                .setCancelText("No")
+                .setCancelClickListener(sweetAlertDialog -> {
+                    sweetAlertDialog.dismissWithAnimation();
+                })
+                .setConfirmText("Yes")
+                .setConfirmClickListener(sweetAlertDialog -> {
+                    if (recipeDataSource.listCount() == 0){
+                        sweetAlertDialog.dismissWithAnimation();
+                    }
+                    else {
+                        compositeDisposable.add(recipeDataSource.clearAllRecipe()
+                                .subscribeOn(Schedulers.io())
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribe(() -> {
+                                    loadAllRecipe();
+                                    sweetAlertDialog.showCancelButton(false)
+                                            .setTitleText("Success!")
+                                            .setContentText("All recipes have been deleted")
+                                            .setConfirmText("Close")
+                                            .setConfirmClickListener(sweetAlertDialog1 -> {
+                                                sweetAlertDialog.dismissWithAnimation();
+                                            })
+                                            .changeAlertType(SweetAlertDialog.SUCCESS_TYPE);
+                                }, throwable -> {
+                                    sweetAlertDialog.showCancelButton(false)
+                                            .setTitleText("Oops!")
+                                            .setContentText("Something wrong \n" + throwable.getMessage())
+                                            .setConfirmText("Close")
+                                            .setConfirmClickListener(sweetAlertDialog1 -> {
+                                                sweetAlertDialog.dismissWithAnimation();
+                                            })
+                                            .changeAlertType(SweetAlertDialog.ERROR_TYPE);
+                                }));
+                    }
+                })
+                .show();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -14,9 +14,6 @@ import io.reactivex.Flowable;
 @Dao
 public interface RecipeDAO {
 
-    @Query("SELECT * FROM Recipe ORDER BY itemId ASC")
-    Flowable<List<RecipeModel>> getAllRecipeASC();
-
     @Query("SELECT * FROM Recipe ORDER BY itemId DESC")
     Flowable<List<RecipeModel>> getAllRecipeDESC();
 

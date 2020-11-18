@@ -7,15 +7,10 @@ import io.reactivex.Flowable;
 
 public class LocalRecipeDataSource implements RecipeDataSource {
 
-    RecipeDAO recipeDAO;
+    private RecipeDAO recipeDAO;
 
     public LocalRecipeDataSource(RecipeDAO recipeDAO) {
         this.recipeDAO = recipeDAO;
-    }
-
-    @Override
-    public Flowable<List<RecipeModel>> getAllRecipeASC() {
-        return recipeDAO.getAllRecipeASC();
     }
 
     @Override

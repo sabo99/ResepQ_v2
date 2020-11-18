@@ -10,7 +10,6 @@ import io.reactivex.Completable;
 import io.reactivex.Flowable;
 
 public interface RecipeDataSource {
-    Flowable<List<RecipeModel>> getAllRecipeASC();
     Flowable<List<RecipeModel>> getAllRecipeDESC();
     int listCount();
     int isExists(int itemId);
