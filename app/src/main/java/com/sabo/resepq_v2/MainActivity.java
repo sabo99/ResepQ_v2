@@ -71,6 +71,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private Toolbar toolbar;
     private SimpleSearchView simpleSearchView;
+    private MenuItem itemSearch, itemClearAll;
 
     /**
      * Dialog Insert
@@ -111,15 +112,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
 
-        MenuItem item = menu.findItem(R.id.action_search);
-        simpleSearchView.setMenuItem(item);
+        itemSearch = menu.findItem(R.id.action_search);
+        itemClearAll = menu.findItem(R.id.action_clear);
+        simpleSearchView.setMenuItem(itemSearch);
+
+        if (recipeDataSource.listCount() == 0)
+            itemClearAll.setVisible(false);
+        else
+            itemClearAll.setVisible(true);
+
         return super.onCreateOptionsMenu(menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.action_clear)
-          clearAllRecipe();
+            clearAllRecipe();
 
         return super.onOptionsItemSelected(item);
     }
@@ -135,34 +143,29 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 })
                 .setConfirmText("Yes")
                 .setConfirmClickListener(sweetAlertDialog -> {
-                    if (recipeDataSource.listCount() == 0){
-                        sweetAlertDialog.dismissWithAnimation();
-                    }
-                    else {
-                        compositeDisposable.add(recipeDataSource.clearAllRecipe()
-                                .subscribeOn(Schedulers.io())
-                                .observeOn(AndroidSchedulers.mainThread())
-                                .subscribe(() -> {
-                                    loadAllRecipe();
-                                    sweetAlertDialog.showCancelButton(false)
-                                            .setTitleText("Success!")
-                                            .setContentText("All recipes have been deleted")
-                                            .setConfirmText("Close")
-                                            .setConfirmClickListener(sweetAlertDialog1 -> {
-                                                sweetAlertDialog.dismissWithAnimation();
-                                            })
-                                            .changeAlertType(SweetAlertDialog.SUCCESS_TYPE);
-                                }, throwable -> {
-                                    sweetAlertDialog.showCancelButton(false)
-                                            .setTitleText("Oops!")
-                                            .setContentText("Something wrong \n" + throwable.getMessage())
-                                            .setConfirmText("Close")
-                                            .setConfirmClickListener(sweetAlertDialog1 -> {
-                                                sweetAlertDialog.dismissWithAnimation();
-                                            })
-                                            .changeAlertType(SweetAlertDialog.ERROR_TYPE);
-                                }));
-                    }
+                    compositeDisposable.add(recipeDataSource.clearAllRecipe()
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe(() -> {
+                                loadAllRecipe();
+                                sweetAlertDialog.showCancelButton(false)
+                                        .setTitleText("Success!")
+                                        .setContentText("All recipes have been deleted")
+                                        .setConfirmText("Close")
+                                        .setConfirmClickListener(sweetAlertDialog1 -> {
+                                            sweetAlertDialog.dismissWithAnimation();
+                                        })
+                                        .changeAlertType(SweetAlertDialog.SUCCESS_TYPE);
+                            }, throwable -> {
+                                sweetAlertDialog.showCancelButton(false)
+                                        .setTitleText("Oops!")
+                                        .setContentText("Something wrong \n" + throwable.getMessage())
+                                        .setConfirmText("Close")
+                                        .setConfirmClickListener(sweetAlertDialog1 -> {
+                                            sweetAlertDialog.dismissWithAnimation();
+                                        })
+                                        .changeAlertType(SweetAlertDialog.ERROR_TYPE);
+                            }));
                 })
                 .show();
     }
@@ -245,11 +248,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      * Load All Recipe
      */
     private void loadAllRecipe() {
-        if (recipeDataSource.listCount() == 0)
-            tvEmptyItem.setVisibility(View.VISIBLE);
-        else
-            tvEmptyItem.setVisibility(View.GONE);
+        invalidateOptionsMenu();
 
+        if (recipeDataSource.listCount() == 0) {
+            tvEmptyItem.setVisibility(View.VISIBLE);
+        } else {
+            tvEmptyItem.setVisibility(View.GONE);
+        }
 
         compositeDisposable.add(recipeDataSource.getAllRecipeDESC()
                 .subscribeOn(Schedulers.io())
