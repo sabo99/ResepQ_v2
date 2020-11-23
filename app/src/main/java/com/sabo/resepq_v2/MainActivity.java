@@ -64,7 +64,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private FloatingActionButton fabAdd;
     private RecyclerView rvItems;
-    private TextView tvEmptyItem, tvEmptySearch;
+    private LinearLayout llEmptyItem, llCreateNew;
+    private TextView tvEmptySearch;
     private RecipeAdapter recipeAdapter, searchAdapter;
     private List<RecipeModel> searchList = new ArrayList<>();
     private List<RecipeModel> resultSearchList;
@@ -116,10 +117,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         itemClearAll = menu.findItem(R.id.action_clear);
         simpleSearchView.setMenuItem(itemSearch);
 
-        if (recipeDataSource.listCount() == 0)
+        if (recipeDataSource.listCount() == 0) {
+            fabAdd.hide();
             itemClearAll.setVisible(false);
-        else
+        } else {
+            fabAdd.show();
             itemClearAll.setVisible(true);
+        }
 
         return super.onCreateOptionsMenu(menu);
     }
@@ -186,11 +190,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         simpleSearchView = findViewById(R.id.simpleSearchView);
         fabAdd = findViewById(R.id.fabAdd);
         rvItems = findViewById(R.id.rvItems);
-        tvEmptyItem = findViewById(R.id.tvEmptyItem);
+        llEmptyItem = findViewById(R.id.llEmptyItem);
+        llCreateNew = findViewById(R.id.llCreateNew);
         tvEmptySearch = findViewById(R.id.tvEmptySearch);
 
         setSupportActionBar(toolbar);
         fabAdd.setOnClickListener(this);
+        llCreateNew.setOnClickListener(this);
 
         recipeDataSource = new LocalRecipeDataSource(RoomDBHost.getInstance(this).recipeDAO());
         rvItems.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
@@ -251,9 +257,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         invalidateOptionsMenu();
 
         if (recipeDataSource.listCount() == 0) {
-            tvEmptyItem.setVisibility(View.VISIBLE);
+            llEmptyItem.setVisibility(View.VISIBLE);
         } else {
-            tvEmptyItem.setVisibility(View.GONE);
+            llEmptyItem.setVisibility(View.GONE);
         }
 
         compositeDisposable.add(recipeDataSource.getAllRecipeDESC()
@@ -279,8 +285,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onClick(View v) {
-        if (v.getId() == R.id.fabAdd)
-            openDialogInsert();
+        switch (v.getId()) {
+            case R.id.fabAdd:
+            case R.id.llCreateNew:
+                openDialogInsert();
+                break;
+            default:
+                break;
+        }
     }
 
     private void openDialogInsert() {

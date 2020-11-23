@@ -21,6 +21,6 @@ public class SplashActivity extends AppCompatActivity {
         new Handler().postDelayed(() -> {
             startActivity(new Intent(this, MainActivity.class));
             finish();
-        }, 2000);
+        }, 700);
     }
 }
