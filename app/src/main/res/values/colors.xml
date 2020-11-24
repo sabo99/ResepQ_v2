@@ -7,6 +7,6 @@
     <color name="colorGrayDark">#595959</color>
     <color name="colorRippleBlack">#33000000</color>
     <color name="colorHint">#CCFFFFFF</color>
-    <color name="colorRed">#FF0000</color>
+    <color name="colorCancelPressed">#B3B6B6B6</color>
 
 </resources>
